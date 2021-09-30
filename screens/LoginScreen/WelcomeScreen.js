@@ -66,11 +66,6 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 10,
     paddingVertical: 20,
   },
-  //   backgroudButton: {
-  //     justifyContent: 'space-evenly',
-  //     alignItems: 'center',
-  //     flex: 1,
-  //   },
   button: {
     backgroundColor: "white",
     height: 50,

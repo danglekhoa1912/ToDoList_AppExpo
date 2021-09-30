@@ -1,10 +1,13 @@
 import React from "react";
-import { View, Text, StyleSheet, ScrollView } from "react-native";
+import { View, Text, StyleSheet, ScrollView, Dimensions } from "react-native";
 import { Avatar, Icon } from "react-native-elements";
 import CircularProgress from "react-native-circular-progress-indicator";
 
 import { MainText, SubText } from "../../components/CustomText";
 import Card from "../../components/Card";
+
+const height = Dimensions.get("screen").height;
+console.log(height);
 
 const Information = (props) => (
   <Card style={styles.containerProfile}>
@@ -81,19 +84,16 @@ const ProfileScreen = () => {
   return (
     <View style={styles.container}>
       <Information />
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        style={styles.containerCard}
-      >
-        <CardQuanlitytask title="Events" color="#F96060" />
-        <CardQuanlitytask title="To do Task" color="#6074F9" />
-        <CardQuanlitytask title="Quick Notes" color="#8560F9" />
-      </ScrollView>
+      <View style={styles.containerCard}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          <CardQuanlitytask title="Events" color="#F96060" />
+          <CardQuanlitytask title="To do Task" color="#6074F9" />
+          <CardQuanlitytask title="Quick Notes" color="#8560F9" />
+        </ScrollView>
+      </View>
       <Card
         style={{
-          height: 200,
-          marginBottom: 48,
+          marginBottom: 30,
           marginHorizontal: 20,
         }}
       >
@@ -101,10 +101,8 @@ const ProfileScreen = () => {
         <View
           style={{
             flexDirection: "row",
-            marginHorizontal: 20,
-            marginTop: 20,
-            marginBottom: 30,
             justifyContent: "space-around",
+            marginVertical: 20,
           }}
         >
           <Progress value={60} color="#F96060" title="Events" />
@@ -144,13 +142,13 @@ const styles = StyleSheet.create({
   },
   card: {
     width: 160,
-    height: 100,
-    justifyContent: "space-around",
     padding: 24,
     marginHorizontal: 10,
   },
   containerCard: {
     marginHorizontal: 10,
+    height: 100,
+    marginBottom: 20,
   },
 });
 
