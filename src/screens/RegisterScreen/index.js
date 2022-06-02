@@ -1,4 +1,3 @@
-import { Formik } from "formik";
 import React, { useState } from "react";
 import {
    View,
@@ -10,25 +9,29 @@ import {
    TouchableWithoutFeedback,
    Platform,
 } from "react-native";
+import { Formik } from "formik";
 import * as Yup from "yup";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import Toast from "react-native-root-toast";
 
 import { CustomButton, CustomForm } from "../../components";
 import { stackName } from "../../configs/NavigationContants";
-import { navigate, replace } from "../../navigation/NavigationWithoutProp";
 import { COLORS } from "../../themes";
+import { replace } from "../../navigation/NavigationWithoutProp";
 
 const validationSchema = Yup.object().shape({
    email: Yup.string()
       .required("Không được bỏ trống")
       .email("Email không hợp lệ"),
    password: Yup.string().required("Không được bỏ trống"),
+   name: Yup.string().required("Không được bỏ trống"),
 });
 
-const LoginScreen = (props) => {
+const RegisterScreen = () => {
+   const auth = getAuth();
    const [secureTextEntry, setSecureTextEntry] = useState(true);
+   const [isloading, setIsLoading] = useState(false);
 
    const toggleSecureEntry = () => {
       setSecureTextEntry(!secureTextEntry);
@@ -49,17 +52,11 @@ const LoginScreen = (props) => {
       <Ionicons size={25} color={COLORS.secondary} name={name} />
    );
 
-   const changeScreenHandle = () => {
-      navigate(stackName.forgotPasswordStack);
-   };
-
    const handleSubmit = ({ email, password }) => {
-      const auth = getAuth();
-      signInWithEmailAndPassword(auth, email, password)
-         .then((userCredential) => {
-            const user = userCredential.user;
-            console.log(user.stsTokenManager.accessToken);
-            let toast = Toast.show("Login Succesful", {
+      setIsLoading(true);
+      createUserWithEmailAndPassword(auth, email, password)
+         .then((userCrendential) => {
+            let toast = Toast.show("Register Succesful", {
                duration: Toast.durations.LONG,
                backgroundColor: "gray",
             });
@@ -68,10 +65,13 @@ const LoginScreen = (props) => {
             setTimeout(() => {
                Toast.hide(toast);
             }, 2000);
-            replace(stackName.homeStack);
+            replace(stackName.loginStack, {});
          })
          .catch((error) => {
             alert(error.message);
+         })
+         .finally(() => {
+            setIsLoading(false);
          });
    };
 
@@ -87,12 +87,13 @@ const LoginScreen = (props) => {
             behavior={Platform.OS === "ios" ? "padding" : "position"}
          >
             <View style={styles.containerTitle}>
-               <Text style={styles.mainTitle}>Welcome back</Text>
-               <Text style={styles.subTitle}>Sign in to continue</Text>
+               <Text style={styles.mainTitle}>Welcome</Text>
+               <Text style={styles.subTitle}>Register to continue</Text>
             </View>
             <Formik
                initialValues={{
                   email: "",
+                  name: "",
                   password: "",
                }}
                onSubmit={handleSubmit}
@@ -121,6 +122,16 @@ const LoginScreen = (props) => {
                               placeholder="Enter your email"
                            />
                            <CustomForm
+                              title="Name"
+                              placeholder="Enter your name"
+                              accessoryLeft={() => renderIconLeft("person")}
+                              value={values.name}
+                              onChangeText={handleChange("name")}
+                              onBlur={handleBlur("name")}
+                              errorMsg={errors.name}
+                              touched={touched.name}
+                           />
+                           <CustomForm
                               title="Password"
                               placeholder="Enter your password"
                               accessoryRight={renderIconSecure}
@@ -134,21 +145,14 @@ const LoginScreen = (props) => {
                               errorMsg={errors.password}
                               touched={touched.password}
                            />
-                           <TouchableOpacity
-                              style={styles.buttonForgot}
-                              onPress={changeScreenHandle}
-                           >
-                              <Text style={{ fontSize: 18 }}>
-                                 Forgot password
-                              </Text>
-                           </TouchableOpacity>
                         </View>
                         <View style={styles.containerButton}>
                            <CustomButton
+                              isloading={isloading}
+                              onPress={handleSubmit}
                               styleTitle={{ fontSize: 18, color: "white" }}
                               style={styles.button}
                               title="Log In"
-                              onPress={handleSubmit}
                            />
                         </View>
                      </View>
@@ -159,6 +163,8 @@ const LoginScreen = (props) => {
       </TouchableWithoutFeedback>
    );
 };
+
+export default RegisterScreen;
 
 const styles = StyleSheet.create({
    container: {
@@ -197,5 +203,3 @@ const styles = StyleSheet.create({
       borderRadius: 5,
    },
 });
-
-export default LoginScreen;

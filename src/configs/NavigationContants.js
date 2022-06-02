@@ -5,6 +5,7 @@ const stackName = {
    resetPasswordStack: "ResetPasswordStack",
    successfulStack: "SuccessfulStack",
    homeStack: "HomeStack",
+   registerStack: "RegisterStack",
 };
 
 const tabName = {

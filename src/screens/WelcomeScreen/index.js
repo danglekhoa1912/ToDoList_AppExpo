@@ -5,10 +5,15 @@ import { CustomButton } from "../../components";
 import { COLORS } from "../../themes";
 import { Event } from "../../assets";
 import { stackName } from "../../configs/NavigationContants";
+import { navigate } from "../../navigation/NavigationWithoutProp";
 
 const WelcomeScreen = (props) => {
-   const switchScreenHandle = () => {
-      props.navigation.navigate(stackName.loginStack);
+   const onPressLogin = () => {
+      navigate(stackName.loginStack, {});
+   };
+
+   const onPressRegister = () => {
+      navigate(stackName.registerStack, {});
    };
 
    return (
@@ -25,12 +30,12 @@ const WelcomeScreen = (props) => {
          <View style={styles.containerButton}>
             <CustomButton
                title="Get Started"
-               onPress={switchScreenHandle}
+               onPress={onPressRegister}
                style={styles.button}
             />
             <CustomButton
                title="Log In"
-               onPress={switchScreenHandle}
+               onPress={onPressLogin}
                style={{ color: "white" }}
             />
          </View>

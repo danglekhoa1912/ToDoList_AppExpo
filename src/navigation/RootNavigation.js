@@ -23,6 +23,10 @@ export default function RootNavigation() {
             component={Screens.LoginScreen}
          />
          <Stack.Screen
+            name={stackName.registerStack}
+            component={Screens.RegisterScreen}
+         />
+         <Stack.Screen
             name={stackName.forgotPasswordStack}
             component={Screens.ForgotPasswordScreen}
          />

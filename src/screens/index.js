@@ -8,6 +8,7 @@ import SuccessfulScreen from "./SuccessfulScreen";
 import WelcomeScreen from "./WelcomeScreen";
 import WorkListDayScreen from "./WorkListDayScreen";
 import WorkListMonthScreen from "./WorkListMonthScreen";
+import RegisterScreen from "./RegisterScreen";
 
 const Screens = {
    ForgotPasswordScreen,
@@ -20,6 +21,7 @@ const Screens = {
    WorkListDayScreen,
    WorkListMonthScreen,
    WelcomeScreen,
+   RegisterScreen,
 };
 
 export default Screens;
