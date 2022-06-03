@@ -13,12 +13,14 @@ import {
 import * as Yup from "yup";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import Toast from "react-native-root-toast";
+import Toast from "react-native-simple-toast";
+import { useDispatch } from "react-redux";
 
 import { CustomButton, CustomForm } from "../../components";
 import { stackName } from "../../configs/NavigationContants";
 import { navigate, replace } from "../../navigation/NavigationWithoutProp";
 import { COLORS } from "../../themes";
+import { requestGetuser } from "../../redux/thunk/UserActionThunk";
 
 const validationSchema = Yup.object().shape({
    email: Yup.string()
@@ -28,6 +30,7 @@ const validationSchema = Yup.object().shape({
 });
 
 const LoginScreen = (props) => {
+   const dispatch = useDispatch();
    const [secureTextEntry, setSecureTextEntry] = useState(true);
 
    const toggleSecureEntry = () => {
@@ -58,16 +61,8 @@ const LoginScreen = (props) => {
       signInWithEmailAndPassword(auth, email, password)
          .then((userCredential) => {
             const user = userCredential.user;
-            console.log(user.stsTokenManager.accessToken);
-            let toast = Toast.show("Login Succesful", {
-               duration: Toast.durations.LONG,
-               backgroundColor: "gray",
-            });
-
-            // You can manually hide the Toast, or it will automatically disappear after a `duration` ms timeout.
-            setTimeout(() => {
-               Toast.hide(toast);
-            }, 2000);
+            Toast.show("Login Succesful!", Toast.LONG);
+            dispatch(requestGetuser(user.uid));
             replace(stackName.homeStack);
          })
          .catch((error) => {

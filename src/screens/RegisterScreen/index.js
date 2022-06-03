@@ -13,7 +13,8 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
-import Toast from "react-native-root-toast";
+import { getDatabase, ref, set } from "firebase/database";
+import Toast from "react-native-simple-toast";
 
 import { CustomButton, CustomForm } from "../../components";
 import { stackName } from "../../configs/NavigationContants";
@@ -52,19 +53,16 @@ const RegisterScreen = () => {
       <Ionicons size={25} color={COLORS.secondary} name={name} />
    );
 
-   const handleSubmit = ({ email, password }) => {
+   const handleSubmit = ({ email, password, name }) => {
       setIsLoading(true);
       createUserWithEmailAndPassword(auth, email, password)
          .then((userCrendential) => {
-            let toast = Toast.show("Register Succesful", {
-               duration: Toast.durations.LONG,
-               backgroundColor: "gray",
+            const db = getDatabase();
+            set(ref(db, "Users/" + userCrendential.user.uid), {
+               username: name,
+               email: email,
             });
-
-            // You can manually hide the Toast, or it will automatically disappear after a `duration` ms timeout.
-            setTimeout(() => {
-               Toast.hide(toast);
-            }, 2000);
+            Toast.show("Register Succesful!", Toast.LONG);
             replace(stackName.loginStack, {});
          })
          .catch((error) => {

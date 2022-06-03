@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
+import { LogBox } from "react-native";
 import { ApplicationProvider, IconRegistry } from "@ui-kitten/components";
 import * as eva from "@eva-design/eva";
 import { EvaIconsPack } from "@ui-kitten/eva-icons";
@@ -8,17 +9,21 @@ import { StatusBar } from "expo-status-bar";
 import * as SplashScreen from "expo-splash-screen";
 import { getAuth } from "firebase/auth";
 import { initializeApp, getApp, getApps } from "firebase/app";
-import { RootSiblingParent } from "react-native-root-siblings";
+import { Provider } from "react-redux";
 
+import store from "./src/redux/RootStore";
 import { default as theme } from "./custom-theme.json"; // <-- Import app theme
 import RootNavigation from "./src/navigation/RootNavigation";
 import { Splash } from "./src/components";
 import { navigationRef } from "./src/navigation/NavigationWithoutProp";
 
 const App = () => {
+   LogBox.ignoreAllLogs(); //Ignore all log notifications
+
    const firebaseConfig = {
       apiKey: "AIzaSyBPRDbFWKqMlQyLoxExviZ8C-s4zum0Vc8",
       authDomain: "todo-app-446be.firebaseapp.com",
+      databaseURL: "https://todo-app-446be-default-rtdb.firebaseio.com",
       projectId: "todo-app-446be",
       storageBucket: "todo-app-446be.appspot.com",
       messagingSenderId: "605619539",
@@ -36,22 +41,17 @@ const App = () => {
             // Artificially delay for two seconds to simulate a slow loading
             // experience. Please remove this if you copy and paste the code!
             await new Promise((resolve) => setTimeout(resolve, 1000));
-            // let app;
-            // if (firebase.apps.length === 0) {
-            //    app = firebase.initializeApp(firebaseConfig);
-            // } else {
-            //    app = firebase.app();
-            // }
+
+            if (getApps().length === 0) initializeApp(firebaseConfig);
+            else {
+               getApp();
+            }
          } catch (e) {
             console.warn(e);
          } finally {
             const auth = getAuth();
             // Tell the application to render
             setAppIsReady(true);
-            if (getApps().length === 0) initializeApp(firebaseConfig);
-            else {
-               getApp();
-            }
          }
       }
 
@@ -76,14 +76,14 @@ const App = () => {
    return (
       <GestureHandlerRootView style={{ flex: 1 }} onLayout={onLayoutRootView}>
          <IconRegistry icons={EvaIconsPack} />
-         <RootSiblingParent>
+         <Provider store={store}>
             <ApplicationProvider {...eva} theme={{ ...eva.light, ...theme }}>
                <StatusBar style="dark" />
                <NavigationContainer ref={navigationRef}>
                   <RootNavigation />
                </NavigationContainer>
             </ApplicationProvider>
-         </RootSiblingParent>
+         </Provider>
       </GestureHandlerRootView>
    );
 };

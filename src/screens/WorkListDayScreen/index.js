@@ -1,8 +1,9 @@
 import { Icon } from "@ui-kitten/components";
 import moment from "moment";
-import React from "react";
+import React, { useEffect } from "react";
 import { View, TouchableOpacity, StyleSheet, FlatList } from "react-native";
 import Swipeable from "react-native-gesture-handler/Swipeable";
+import { useSelector } from "react-redux";
 
 import { Card, CustomCard, CustomText } from "../../components";
 import TASK from "../../../data/task-data";
@@ -25,6 +26,9 @@ const Option = (props) => (
 
 const WorkListDayScreen = (props) => {
    let date;
+
+   const user = useSelector((state) => state.UserReducer);
+
    const renderRight = (progress, dragX) => {
       return (
          <Card style={styles.containerOption}>
